@@ -1,13 +1,13 @@
 /*!
- * AITokenCounter v1.0.0
+ * TokenCounter v1.0.0
  *
- * A small, dependency-free widget that displays an AI token count with a
+ * A small, dependency-free widget that displays a token count with a
  * verified/estimated badge, cost, and model label. Designed to be dropped
  * into any static site with a single <script> + <link> include.
  *
  * Usage:
- *   AITokenCounter.init({
- *     target: "#ai-counter",   // CSS selector or Element
+ *   TokenCounter.init({
+ *     target: "#counter",   // CSS selector or Element
  *     tokens: 2841921,
  *     verified: true,
  *     estimated: false,
@@ -20,7 +20,7 @@
  * handle with update()/destroy() so hosts can drive it from their own code
  * (live updates, API polling, framework wrappers) without touching the
  * internals. Everything else lives in a closure — the only global added is
- * `AITokenCounter`.
+ * `TokenCounter`.
  *
  * MIT License
  */
@@ -33,7 +33,7 @@
     define([], factory);
   } else {
     // Browser global
-    root.AITokenCounter = factory();
+    root.TokenCounter = factory();
   }
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
@@ -170,19 +170,19 @@
   // ---------------------------------------------------------------------------
 
   function buildMarkup(state) {
-    var badgeClass = state.verified ? "aitc__badge--verified" : "aitc__badge--estimated";
+    var badgeClass = state.verified ? "tc__badge--verified" : "tc__badge--estimated";
     var badgeText = state.verified ? "\u2713 Verified" : "Estimated";
 
     var modelHtml = state.model
-      ? '<span class="aitc__model">' + escapeHtml(state.model) + "</span>"
+      ? '<span class="tc__model">' + escapeHtml(state.model) + "</span>"
       : "";
     var cost = formatCost(state.cost);
-    var costHtml = cost ? '<span class="aitc__cost">' + cost + "</span>" : "";
+    var costHtml = cost ? '<span class="tc__cost">' + cost + "</span>" : "";
     var metaHtml = modelHtml + costHtml;
-    if (metaHtml) metaHtml = '<div class="aitc__meta">' + metaHtml + "</div>";
+    if (metaHtml) metaHtml = '<div class="tc__meta">' + metaHtml + "</div>";
 
     var badgeHtml = state.badge
-      ? '<span class="aitc__badge ' +
+      ? '<span class="tc__badge ' +
         badgeClass +
         '">' +
         badgeText +
@@ -190,17 +190,17 @@
       : "";
 
     return (
-      '<div class="aitc" data-aitc-theme="' +
+      '<div class="tc" data-tc-theme="' +
       state.theme +
       '">' +
-      '<div class="aitc__card">' +
-      '<div class="aitc__top">' +
-      '<span class="aitc__label">' +
+      '<div class="tc__card">' +
+      '<div class="tc__top">' +
+      '<span class="tc__label">' +
       escapeHtml(state.label) +
       "</span>" +
       badgeHtml +
       "</div>" +
-      '<div class="aitc__count" role="text" aria-label="' +
+      '<div class="tc__count" role="text" aria-label="' +
       escapeHtml(formatTokens(state.tokens)) +
       " tokens" +
       '">' +
@@ -263,21 +263,21 @@
     if (!target) {
       // Graceful degradation: a missing target must never break the host page.
       if (typeof console !== "undefined" && console.warn) {
-        console.warn("AITokenCounter: target not found, widget not rendered.");
+        console.warn("TokenCounter: target not found, widget not rendered.");
       }
       return null;
     }
 
-    var existing = target.querySelector(".aitc");
-    if (existing && existing.aitcInstance) {
-      return existing.aitcInstance;
+    var existing = target.querySelector(".tc");
+    if (existing && existing.tcInstance) {
+      return existing.tcInstance;
     }
 
     target.innerHTML = buildMarkup(state);
-    var rootEl = target.querySelector(".aitc");
-    var countEl = rootEl.querySelector(".aitc__count");
+    var rootEl = target.querySelector(".tc");
+    var countEl = rootEl.querySelector(".tc__count");
 
-    // The host keeps its element; we render a single .aitc root inside it.
+    // The host keeps its element; we render a single .tc root inside it.
     var handle = {
       element: target,
       _state: state, // mutable state (see updateInstance)
@@ -292,7 +292,7 @@
       },
     };
 
-    rootEl.aitcInstance = handle;
+    rootEl.tcInstance = handle;
     instances.push(handle);
 
     // Animate only on first render (count-up from zero); later update() calls
@@ -322,15 +322,15 @@
     // Re-render inside the same host element; the widget root is re-created,
     // so rebind the instance reference to the fresh node.
     handle.element.innerHTML = buildMarkup(state);
-    var rootEl = handle.element.querySelector(".aitc");
-    rootEl.aitcInstance = handle;
+    var rootEl = handle.element.querySelector(".tc");
+    rootEl.tcInstance = handle;
     return handle;
   }
 
   function destroyInstance(handle) {
     if (!handle || !handle.element) return;
     handle.element.innerHTML = "";
-    delete handle.element.aitcInstance;
+    delete handle.element.tcInstance;
     var idx = instances.indexOf(handle);
     if (idx !== -1) instances.splice(idx, 1);
   }
@@ -349,9 +349,9 @@
       handle = themeWatchers[i];
       if (!handle || !handle.element) continue;
       state = handle.getState();
-      var rootEl = handle.element.querySelector(".aitc");
+      var rootEl = handle.element.querySelector(".tc");
       if (rootEl) {
-        rootEl.setAttribute("data-aitc-theme", resolveTheme(state.theme));
+        rootEl.setAttribute("data-tc-theme", resolveTheme(state.theme));
       }
     }
   }

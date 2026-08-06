@@ -1,0 +1,153 @@
+/*!
+ * TokenCounter v1.0.0
+ *
+ * Scoped styles for the TokenCounter widget. Every class is namespaced with
+ * `tc__` to avoid collisions with host pages, and all colors/type come from
+ * CSS custom properties (--tc-*) so a host can restyle the widget from its
+ * own stylesheet without editing this file. Include alongside
+ * token-counter.js.
+ *
+ *   <link rel="stylesheet" href="token-counter.css">
+ *   <div id="counter"></div>
+ *   <script src="token-counter.js"></script>
+ *
+ * The widget ships with no default positioning (it renders as a normal block
+ * in the target element) so it works inline anywhere; a host that wants a
+ * floating corner widget simply sets position/fixed on the target element.
+ *
+ * The default look is intentionally quiet — a compact, hairline-bordered note
+ * rather than a loud card — so it can sit on editorial-style pages without
+ * shouting. Hosts restyle via the --tc-* variables.
+ */
+
+.tc {
+  --tc-bg: #fdfcf7;
+  --tc-ink: #23241f;
+  --tc-muted: #84867a;
+  --tc-line: #e2e0d4;
+  --tc-accent: #1b365d;
+  --tc-ok: #2e6b3e;
+  --tc-ok-bg: #e2f0e4;
+  --tc-warn: #7a4a21;
+  --tc-warn-bg: #f3e7d8;
+  --tc-font: "Source Serif 4", Charter, Georgia, "Times New Roman", serif;
+  --tc-display: "Fraunces", "Source Serif 4", Charter, Georgia, "Times New Roman", serif;
+  --tc-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+  --tc-radius: 12px;
+  --tc-shadow: 0 1px 2px rgba(35, 36, 31, 0.06),
+    0 10px 26px -16px rgba(35, 36, 31, 0.16);
+}
+
+.tc[data-tc-theme="dark"] {
+  --tc-bg: #211f17;
+  --tc-ink: #eae7db;
+  --tc-muted: #9d988a;
+  --tc-line: #33312a;
+  --tc-accent: #9db9db;
+  --tc-ok: #a8d4ae;
+  --tc-ok-bg: rgba(168, 212, 174, 0.15);
+  --tc-warn: #dcb185;
+  --tc-warn-bg: rgba(220, 177, 133, 0.15);
+  --tc-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 28px -18px rgba(0, 0, 0, 0.6);
+}
+
+.tc,
+.tc * {
+  box-sizing: border-box;
+}
+
+.tc__card {
+  display: inline-block;
+  min-width: 0;
+  max-width: 300px;
+  padding: 10px 14px;
+  background: var(--tc-bg);
+  border: 1px solid var(--tc-line);
+  border-radius: var(--tc-radius);
+  box-shadow: var(--tc-shadow);
+  font-family: var(--tc-font);
+  color: var(--tc-ink);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.tc__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+
+.tc__label {
+  font-family: var(--tc-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tc-muted);
+}
+
+.tc__badge {
+  font-family: var(--tc-mono);
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1px 8px;
+  border-radius: 999px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.tc__badge--verified {
+  color: var(--tc-ok);
+  background: var(--tc-ok-bg);
+}
+
+.tc__badge--estimated {
+  color: var(--tc-warn);
+  background: var(--tc-warn-bg);
+}
+
+.tc__count {
+  font-family: var(--tc-display);
+  font-size: 1.4rem;
+  font-weight: 560;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tc__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.tc__model,
+.tc__cost {
+  font-family: var(--tc-mono);
+  font-size: 0.64rem;
+  color: var(--tc-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 480px) {
+  .tc__card {
+    width: 100%;
+    max-width: none;
+    padding: 9px 12px;
+  }
+  .tc__count {
+    font-size: 1.25rem;
+  }
+}
+
+/* Follow hosts that honor the prefers-reduced-motion setting. */
+@media (prefers-reduced-motion: reduce) {
+  .tc,
+  .tc * {
+    transition: none;
+  }
+}

@@ -1,21 +1,20 @@
 {
-  "name": "ai-token-counter",
+  "name": "token-counter",
   "version": "1.0.0",
-  "description": "A small, dependency-free widget that displays an AI token count with verified/estimated badge, model, and cost. Works on any static site.",
-  "main": "ai-token-counter.js",
-  "style": "ai-token-counter.css",
+  "description": "A small, dependency-free widget that displays a token count with verified/estimated badge, model, and cost. Works on any static site.",
+  "main": "token-counter.js",
+  "style": "token-counter.css",
   "files": [
-    "ai-token-counter.js",
-    "ai-token-counter.css",
+    "token-counter.js",
+    "token-counter.css",
     "demo.html"
   ],
   "scripts": {
-    "check": "node --check ai-token-counter.js",
+    "check": "node --check token-counter.js",
     "demo": "python3 -m http.server 8080"
   },
   "keywords": [
     "tokens",
-    "ai",
     "widget",
     "llm",
     "token-counter",
