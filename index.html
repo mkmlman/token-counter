@@ -37,6 +37,22 @@
       --warn: #dcb185;
       --warn-bg: rgba(220, 177, 133, 0.15);
     }
+    @media (prefers-color-scheme: dark) {
+      html:not([data-theme]) {
+        --bg: #211f17;
+        --bg-soft: #191812;
+        --ink: #eae7db;
+        --muted: #9d988a;
+        --line: #33312a;
+        --line-strong: #403d33;
+        --accent: #9db9db;
+        --accent-soft: rgba(157, 185, 219, 0.12);
+        --ok: #a8d4ae;
+        --ok-bg: rgba(168, 212, 174, 0.15);
+        --warn: #dcb185;
+        --warn-bg: rgba(220, 177, 133, 0.15);
+      }
+    }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
@@ -308,7 +324,7 @@
 
   <header class="masthead">
     <p class="eyebrow">TokenCounter v1.0.0 · zero dependencies</p>
-    <h1>Every token, <em>counted.</em></h1>
+    <h1>Know your <em>token bill.</em></h1>
     <p class="lede">
       A small, dependency-free widget that shows your token count with a
       verified/estimated badge, model, and cost — dropped into any static site
