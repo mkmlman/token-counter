@@ -351,6 +351,7 @@
   // When any instance uses "auto" and the document theme changes, re-paint so
   // the widget follows the host (light <-> dark toggle, OS changes).
   var themeWatchers = [];
+  var themeWatching = false;
 
   function repaintThemes() {
     var i, handle, state;
@@ -366,7 +367,8 @@
   }
 
   function watchThemes() {
-    if (themeWatchers.length) return; // already watching
+    if (themeWatching) return; // already watching
+    themeWatching = true;
     if (typeof window.matchMedia === "function") {
       window
         .matchMedia("(prefers-color-scheme: dark)")
