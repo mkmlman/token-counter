@@ -191,7 +191,7 @@
 
     return (
       '<div class="tc" data-tc-theme="' +
-      state.theme +
+      resolveTheme(state.theme) +
       '">' +
       '<div class="tc__card">' +
       '<div class="tc__top">' +
