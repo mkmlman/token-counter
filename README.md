@@ -6,6 +6,10 @@ verified/estimated badge, model, and cost. Drop it into *any* static site with o
 
 ![npm](https://img.shields.io/npm/v/token-counter)
 
+![TokenCounter widget in light and dark themes](screenshots/widget.png)
+
+> Live demo: <https://mkmlman.github.io/token-counter/>
+
 ## Usage
 
 ```html
@@ -97,3 +101,9 @@ npm run demo    # serve the standalone demo at :8080
 ## License
 
 [MIT](LICENSE)
+
+## Live demo
+
+See the widget running on [GitHub Pages](https://mkmlman.github.io/token-counter/),
+or open [`demo.html`](demo.html) locally — both showcase light/dark theming,
+live updates, and badge toggling.

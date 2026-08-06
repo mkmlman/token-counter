@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TokenCounter — live demo</title>
+  <style>
+    :root {
+      --page-bg: #faf9f5;
+      --page-ink: #23241f;
+      --page-muted: #6b6c62;
+      --page-line: #e2e0d4;
+    }
+    html[data-theme="dark"] {
+      --page-bg: #181712;
+      --page-ink: #eae7db;
+      --page-muted: #9d988a;
+      --page-line: #33312a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      background: var(--page-bg);
+      color: var(--page-ink);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    header {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 64px 24px 8px;
+    }
+    header h1 { font-size: 2rem; margin: 0 0 8px; }
+    header p { color: var(--page-muted); line-height: 1.6; margin: 0; }
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+    .stage {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+      margin: 24px 0;
+    }
+    .stage > div { flex: 1; min-width: 240px; }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 8px 0 32px;
+    }
+    button {
+      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--page-line);
+      background: var(--page-bg);
+      color: var(--page-ink);
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    button:hover { border-color: var(--page-muted); }
+    pre {
+      background: var(--page-bg);
+      border: 1px solid var(--page-line);
+      border-radius: 10px;
+      padding: 16px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    code {
+      font-family: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+    }
+    footer {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 24px;
+      border-top: 1px solid var(--page-line);
+      color: var(--page-muted);
+      font-size: 0.85rem;
+    }
+    footer a { color: inherit; }
+  </style>
+  <link rel="stylesheet" href="token-counter.css">
+</head>
+<body>
+  <header>
+    <h1>TokenCounter</h1>
+    <p>
+      A small, dependency-free token count widget with verified/estimated badge,
+      model, and cost. Drop it into any static site with one <code>&lt;link&gt;</code>
+      and one <code>&lt;script&gt;</code>. Rendered live below.
+    </p>
+  </header>
+
+  <main>
+    <div class="stage">
+      <div id="counter-verified"></div>
+      <div id="counter-estimated"></div>
+      <div id="counter-min"></div>
+    </div>
+
+    <div class="controls">
+      <button id="live-update">+1M tokens</button>
+      <button id="toggle-badge">Hide/show badge</button>
+      <button id="toggle-theme">Toggle light/dark</button>
+    </div>
+
+    <h2>Usage</h2>
+<pre><code>&lt;link rel="stylesheet" href="token-counter.css"&gt;
+&lt;div id="counter"&gt;&lt;/div&gt;
+&lt;script src="token-counter.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  TokenCounter.init({
+    target: "#counter",
+    tokens: 2841921,
+    verified: true,
+    estimated: false,
+    model: "GPT-5",
+    cost: 42.18,
+    theme: "auto"   // "auto" | "light" | "dark"
+  });
+&lt;/script&gt;</code></pre>
+  </main>
+
+  <footer>
+    Source &amp; docs on <a href="https://github.com/mkmlman/token-counter">GitHub</a> ·
+    MIT licensed
+  </footer>
+
+  <script src="token-counter.js"></script>
+  <script>
+    var verified = TokenCounter.init({
+      target: "#counter-verified",
+      tokens: 2841921,
+      verified: true,
+      model: "GPT-5",
+      cost: 42.18
+    });
+
+    var estimated = TokenCounter.init({
+      target: "#counter-estimated",
+      tokens: 1500000000,
+      estimated: true,
+      model: "Claude 4",
+      cost: 9.5
+    });
+
+    var minimal = TokenCounter.init({
+      target: "#counter-min",
+      tokens: 845000
+    });
+
+    document.getElementById("live-update").addEventListener("click", function () {
+      var state = verified.getState();
+      verified.update({ tokens: state.tokens + 1000000 });
+    });
+
+    document.getElementById("toggle-badge").addEventListener("click", function () {
+      var state = verified.getState();
+      verified.update({ badge: !state.badge });
+    });
+
+    document.getElementById("toggle-theme").addEventListener("click", function () {
+      var current = document.documentElement.getAttribute("data-theme");
+      document.documentElement.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    });
+  </script>
+</body>
+</html>
