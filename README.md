@@ -95,7 +95,7 @@ The code is structured so these can be added without breaking the public API:
 
 ```sh
 npm run check   # node --check token-counter.js
-npm run demo    # serve the standalone demo at :8080
+npm run demo    # serve the live demo (index.html) at :8080
 ```
 
 ## License
@@ -105,5 +105,5 @@ npm run demo    # serve the standalone demo at :8080
 ## Live demo
 
 See the widget running on [GitHub Pages](https://mkmlman.github.io/token-counter/),
-or open [`demo.html`](demo.html) locally — both showcase light/dark theming,
+or open [`index.html`](index.html) locally — it showcases light/dark theming,
 live updates, and badge toggling.

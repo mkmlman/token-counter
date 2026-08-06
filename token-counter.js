@@ -253,7 +253,27 @@
   // Kept private so only one instance exists per target element.
   var instances = [];
 
-  function createInstance(options) {
+  // The handle is the public object callers hold onto. It is created up-front
+  // (even when rendering is deferred until DOMContentLoaded) so the API is
+  // always usable: init() returns a live handle, never a promise or a stub.
+  function createHandle() {
+    var handle = {
+      element: null,
+      _state: null, // mutable state (see updateInstance)
+      update: function (patch) {
+        return updateInstance(handle, patch);
+      },
+      destroy: function () {
+        return destroyInstance(handle);
+      },
+      getState: function () {
+        return shallowCopy(handle._state);
+      },
+    };
+    return handle;
+  }
+
+  function createInstance(options, handle) {
     var state = normalizeOptions(options);
     var target =
       typeof options.target === "string"
@@ -273,24 +293,13 @@
       return existing.tcInstance;
     }
 
+    handle = handle || createHandle();
+    handle.element = target;
+    handle._state = state;
+
     target.innerHTML = buildMarkup(state);
     var rootEl = target.querySelector(".tc");
     var countEl = rootEl.querySelector(".tc__count");
-
-    // The host keeps its element; we render a single .tc root inside it.
-    var handle = {
-      element: target,
-      _state: state, // mutable state (see updateInstance)
-      update: function (patch) {
-        return updateInstance(handle, patch);
-      },
-      destroy: function () {
-        return destroyInstance(handle);
-      },
-      getState: function () {
-        return shallowCopy(state);
-      },
-    };
 
     rootEl.tcInstance = handle;
     instances.push(handle);
@@ -303,7 +312,7 @@
   }
 
   function updateInstance(handle, patch) {
-    if (!handle) return null;
+    if (!handle || !handle.element) return null;
     // Mutate the handle's own state so getState() reflects the latest values.
     var state = handle._state;
     if (patch && typeof patch === "object") {
@@ -385,17 +394,22 @@
     version: VERSION,
     init: function (options) {
       var opts = options || {};
-      // Defer if the document is still parsing (script in <head>).
+      var handle = createHandle();
+      // Defer only the DOM work if the document is still parsing (script in
+      // <head> or end-of-body). The handle is returned immediately either way,
+      // so update()/destroy()/getState() are always usable by the host.
       if (document.readyState === "loading") {
-        var initFn = function () {
-          var handle = createInstance(opts);
-          if (handle) registerThemeWatcher(handle);
-          return handle;
-        };
-        document.addEventListener("DOMContentLoaded", initFn, { once: true });
-        return { deferred: true };
+        document.addEventListener(
+          "DOMContentLoaded",
+          function () {
+            var instance = createInstance(opts, handle);
+            if (instance) registerThemeWatcher(instance);
+          },
+          { once: true }
+        );
+        return handle;
       }
-      var instance = createInstance(opts);
+      var instance = createInstance(opts, handle);
       if (instance) registerThemeWatcher(instance);
       return instance;
     },

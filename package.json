@@ -7,7 +7,7 @@
   "files": [
     "token-counter.js",
     "token-counter.css",
-    "demo.html"
+    "index.html"
   ],
   "scripts": {
     "check": "node --check token-counter.js",
