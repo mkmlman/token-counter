@@ -360,6 +360,16 @@
     @media (prefers-reduced-motion: reduce) {
       * { animation: none !important; transition: none !important; }
     }
+
+    /* smooth crossfade when toggling light/dark theme */
+    .theme-fade {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.45s ease;
+    }
   </style>
   <link rel="stylesheet" href="token-counter.css">
 </head>
@@ -450,11 +460,32 @@
     });
 
     document.getElementById("toggle-theme").addEventListener("click", function () {
-      var current = document.documentElement.getAttribute("data-theme");
+      var root = document.documentElement;
+      var current = root.getAttribute("data-theme");
       var next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      try { localStorage.setItem("tc-theme", next); } catch (e) {}
-      document.dispatchEvent(new CustomEvent("themechange"));
+
+      var reduceMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (!reduceMotion) {
+        var oldBg = getComputedStyle(root).getPropertyValue("--bg").trim() || "#fdfcf7";
+        var fade = document.createElement("div");
+        fade.className = "theme-fade";
+        fade.style.background = oldBg;
+        document.body.appendChild(fade);
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("tc-theme", next); } catch (e) {}
+        document.dispatchEvent(new CustomEvent("themechange"));
+        requestAnimationFrame(function () {
+          fade.style.opacity = "0";
+        });
+        setTimeout(function () { fade.remove(); }, 500);
+      } else {
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem("tc-theme", next); } catch (e) {}
+        document.dispatchEvent(new CustomEvent("themechange"));
+      }
     });
 
     try {

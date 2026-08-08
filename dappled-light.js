@@ -6,9 +6,7 @@
  * penumbral blurring, a golden warm fringe, ordered dithering, wind, and
  * mouse/device parallax.
  *
- * Adapted from Jacky Zhao's personal site (jzhao.xyz / "Experiments in
- * procedural dappled light shaders", 2026). Original site code is public on
- * jzhao.xyz; MIT-licensed. Colors are driven by CSS custom properties:
+ * Colors are driven by CSS custom properties:
  *   --komorebi-light  lit wall
  *   --komorebi-mid    glow / golden fringe
  *   --komorebi-shadow shadow tone

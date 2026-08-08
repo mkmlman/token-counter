@@ -7,10 +7,11 @@
   "files": [
     "token-counter.js",
     "token-counter.css",
+    "dappled-light.js",
     "index.html"
   ],
   "scripts": {
-    "check": "node --check token-counter.js",
+    "check": "node --check token-counter.js && node --check dappled-light.js",
     "demo": "python3 -m http.server 8080"
   },
   "keywords": [

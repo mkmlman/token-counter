@@ -94,7 +94,7 @@ The code is structured so these can be added without breaking the public API:
 ## Development
 
 ```sh
-npm run check   # node --check token-counter.js
+npm run check   # node --check token-counter.js dappled-light.js
 npm run demo    # serve the live demo (index.html) at :8080
 ```
 
@@ -105,5 +105,18 @@ npm run demo    # serve the live demo (index.html) at :8080
 ## Live demo
 
 See the widget running on [GitHub Pages](https://mkmlman.github.io/token-counter/),
-or open [`index.html`](index.html) locally — it showcases light/dark theming,
-live updates, and badge toggling.
+or open [`index.html`](index.html) locally.
+
+The demo page is an editorial, single-viewport showcase of the widget:
+
+- **Dappled light background** — a procedural *komorebi* (sunlight-through-leaves)
+  WebGL shader rendered by [`dappled-light.js`](dappled-light.js).
+  It boots on a `nav` event, reads its palette from the `--komorebi-*` CSS
+  variables, and re-themes on a `themechange` event. It's purely decorative —
+  the widget itself doesn't depend on it.
+- **Frosted readability sheet** — the headline, lede, widget cards, and controls
+  sit on a blurred, translucent pane so they stay legible over the dappled light.
+- **Live interactions** — light/dark toggle (with a crossfade transition), `+1M
+  tokens` live count-up, and hide/show badge.
+- **Theme-aware** — the page chrome and the widgets all follow the toggle, the
+  OS `prefers-color-scheme`, and a persisted `localStorage` preference.
