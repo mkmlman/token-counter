@@ -182,7 +182,7 @@
       .fluid-canvas { display: none !important; }
     }
 
-    /* Fluid dialers — tobis.vision style: vertical knob column on the right */
+    /* Fluid dialers — tobis.vision style: vertical slider column on the right */
     .fluid-dialers {
       position: fixed;
       right: 14px;
@@ -192,12 +192,12 @@
       z-index: 220;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 10px 12px;
-      width: 78px;
+      align-items: stretch;
+      gap: 16px;
+      padding: 16px 12px 14px;
+      width: 176px;
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      border-radius: 16px;
       background: rgba(0,0,0,0.88);
       box-shadow: 0 8px 28px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.06) inset;
       transform: translateY(-50%);
@@ -210,7 +210,6 @@
     @media (prefers-reduced-motion: reduce) {
       .fluid-dialers { transition: none; }
     }
-    /* title for the column like tobis panel */
     .fluid-dialers::before {
       content: "FLUID";
       font-family: var(--mono);
@@ -219,98 +218,30 @@
       color: #6e6e70;
       line-height: 1;
       margin-bottom: 2px;
+      text-align: center;
     }
     .dial {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       gap: 6px;
       width: 100%;
       flex-shrink: 0;
     }
-    .dial-knob {
-      appearance: none;
-      -webkit-appearance: none;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      border: 0;
-      background: transparent;
-      position: relative;
-      cursor: grab;
-      touch-action: none;
-      padding: 0;
-      flex-shrink: 0;
-      --dial-pct: 0%;
-      --dial-angle: -135deg;
-      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
-    }
-    .dial-knob:active { cursor: grabbing; }
-    .dial-knob:focus-visible { outline: 1px solid rgba(255,255,255,0.55); outline-offset: 3px; border-radius: 50%; }
-    .dial-knob-face {
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background:
-        radial-gradient(120% 120% at 30% 22%, rgba(255,255,255,0.18), transparent 38%),
-        radial-gradient(140% 140% at 50% 50%, #262628 0%, #101012 58%, #070708 100%);
-      border: 1px solid rgba(255,255,255,0.10);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -6px 10px rgba(0,0,0,0.45);
-      overflow: hidden;
-    }
-    /* tick ring — 24 faint ticks like hardware */
-    .dial-knob-face::before {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-radius: 50%;
-      background: repeating-conic-gradient(
-        from -135deg,
-        rgba(255,255,255,0.42) 0 1deg,
-        transparent 1deg 15deg
-      );
-      -webkit-mask: radial-gradient(circle, transparent 56%, #000 57% 62%, transparent 62.5%);
-      mask: radial-gradient(circle, transparent 56%, #000 57% 62%, transparent 62.5%);
-      opacity: 0.55;
-      pointer-events: none;
-    }
-    /* indicator needle + center cap */
-    .dial-indicator {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 2px;
-      height: 20px;
-      margin-left: -1px;
-      margin-top: -20px;
-      background: linear-gradient(180deg, #f2f2f3 0%, #d6d6d8 100%);
-      border-radius: 999px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-      transform-origin: 50% 20px;
-      transform: rotate(var(--dial-angle));
-      display: block;
-      pointer-events: none;
-    }
-    .dial-indicator::after {
-      content: "";
-      position: absolute;
-      left: 50%; top: 50%;
-      width: 8px; height: 8px;
-      margin: -4px 0 0 -4px;
-      border-radius: 50%;
-      background: #0a0a0c;
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    .dial-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
     }
     .dial-label {
       font-family: var(--mono);
-      font-size: 0.48rem;
-      letter-spacing: 0.16em;
+      font-size: 0.52rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: #7e7e80;
+      color: #8a8a8c;
       line-height: 1;
       white-space: nowrap;
-      order: -1;
     }
     .dial-value {
       font-family: var(--mono);
@@ -320,63 +251,114 @@
       font-variant-numeric: tabular-nums;
       line-height: 1;
       min-height: 0.58rem;
-      cursor: ns-resize;
-      border-bottom: 1px dotted rgba(255,255,255,0.18);
-      padding-bottom: 1px;
+      cursor: ew-resize;
       user-select: none;
-      text-align: center;
+      text-align: right;
+      border-bottom: 1px dotted transparent;
+      padding-bottom: 1px;
     }
-    .dial-value:hover { color: #fff; border-bottom-color: rgba(255,255,255,0.32); }
+    .dial-value:hover { color: #fff; border-bottom-color: rgba(255,255,255,0.18); }
     .dial-value:active { cursor: grabbing; }
+    /* tobis slider: thin track + pill thumb, not a knob */
+    .dial-knob {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      height: 14px;
+      border: 0;
+      background: transparent;
+      position: relative;
+      cursor: ew-resize;
+      touch-action: none;
+      padding: 0;
+      flex-shrink: 0;
+      --dial-pct: 0%;
+      --dial-angle: -135deg;
+      border-radius: 999px;
+    }
+    .dial-knob:focus-visible { outline: 1px solid rgba(255,255,255,0.55); outline-offset: 2px; border-radius: 999px; }
+    .dial-knob-face {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: rgba(255,255,255,0.16);
+      border-radius: 999px;
+      transform: translateY(-50%);
+      overflow: visible;
+    }
+    .dial-knob-face::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: var(--dial-pct);
+      background: #f2f2f3;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .dial-knob-face::after {
+      content: "";
+      position: absolute;
+      left: var(--dial-pct);
+      top: 50%;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #0a0a0c;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      pointer-events: none;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+    .dial-knob:active .dial-knob-face::after { transform: translate(-50%, -50%) scale(1.12); box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+    .dial-knob:hover .dial-knob-face { background: rgba(255,255,255,0.20); }
+    .dial-indicator { display: none; }
     .dial-reset {
       appearance: none;
-      width: 28px; height: 28px;
-      border-radius: 50%;
+      align-self: center;
+      width: 100%;
+      height: 28px;
+      border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(255,255,255,0.04);
       color: #8d8d8f;
-      font-size: 12px;
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       line-height: 1;
       cursor: pointer;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      margin-top: 2px;
-      transition: color 0.14s, border-color 0.14s, background 0.14s, transform 0.14s;
+      margin-top: 4px;
+      transition: color 0.14s, border-color 0.14s, background 0.14s;
     }
-    .dial-reset:hover { color: #fff; border-color: rgba(255,255,255,0.20); background: rgba(255,255,255,0.08); transform: rotate(-18deg); }
+    .dial-reset:hover { color: #fff; border-color: rgba(255,255,255,0.20); background: rgba(255,255,255,0.08); }
     @media (max-width: 860px) {
-      .fluid-dialers {
-        right: 10px;
-        width: 70px;
-        padding: 12px 8px 10px;
-        gap: 12px;
-      }
-      .dial-knob { width: 46px; height: 46px; }
-      .dial-indicator { height: 17px; margin-top: -17px; transform-origin: 50% 17px; }
+      .fluid-dialers { right: 10px; width: 160px; padding: 14px 10px 12px; gap: 14px; }
     }
     @media (max-width: 560px) {
       .fluid-dialers {
         right: 8px;
+        left: 8px;
         top: auto;
         bottom: 10px;
         transform: none;
         flex-direction: row;
         align-items: center;
         width: auto;
-        max-width: calc(100vw - 16px);
-        padding: 8px 10px;
-        gap: 10px;
+        max-width: none;
+        padding: 10px 12px;
+        gap: 16px;
         overflow-x: auto;
         scrollbar-width: none;
         border-radius: 14px;
       }
       .fluid-dialers::before { display: none; }
-      .dial { min-width: 52px; width: auto; }
-      .dial-knob { width: 44px; height: 44px; }
-      .dial-indicator { height: 16px; margin-top: -16px; transform-origin: 50% 16px; }
-      .dial-label, .dial-value { font-size: 0.5rem; }
-      .dial-reset { margin-top: 0; margin-left: 2px; }
+      .dial { min-width: 112px; width: 112px; }
+      .dial-reset { width: auto; padding: 0 14px; margin-top: 0; }
     }
     /* background toggle (ocean/fluid style) */
     .bg-toggle {
@@ -662,49 +644,44 @@
     MIT licensed · <a href="https://github.com/mkmlman/token-counter#readme">Documentation</a>
   </footer>
 
-  <!-- Fluid dialers (catnews) — shown only when fluid background is active -->
+  <!-- Fluid dialers — tobis.vision slider panel on the right -->
   <div class="fluid-dialers" id="fluid-dialers" hidden>
     <div class="dial" data-key="splat" data-min="0.01" data-max="0.12" data-step="0.005" data-value="0.010">
+      <div class="dial-head"><span class="dial-label">Splat</span><span class="dial-value" aria-hidden="true">0.010</span></div>
       <button class="dial-knob" type="button" role="slider" aria-valuemin="0.01" aria-valuemax="0.12" aria-valuenow="0.010" aria-valuetext="0.010" aria-label="Splat radius">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <span class="dial-label">Splat</span>
-      <span class="dial-value" aria-hidden="true">0.010</span>
       <input type="range" id="dial-splat" min="0.01" max="0.12" step="0.005" value="0.010" hidden>
     </div>
     <div class="dial" data-key="density" data-min="0.90" data-max="1.0" data-step="0.005" data-value="0.925">
+      <div class="dial-head"><span class="dial-label">Dissolve</span><span class="dial-value" aria-hidden="true">0.925</span></div>
       <button class="dial-knob" type="button" role="slider" aria-valuemin="0.90" aria-valuemax="1.0" aria-valuenow="0.925" aria-valuetext="0.925" aria-label="Dissolve">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <span class="dial-label">Dissolve</span>
-      <span class="dial-value" aria-hidden="true">0.925</span>
       <input type="range" id="dial-density" min="0.90" max="1.0" step="0.005" value="0.925" hidden>
     </div>
     <div class="dial" data-key="curl" data-min="0" data-max="50" data-step="1" data-value="0">
+      <div class="dial-head"><span class="dial-label">Curl</span><span class="dial-value" aria-hidden="true">0</span></div>
       <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-valuetext="0" aria-label="Curl">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <span class="dial-label">Curl</span>
-      <span class="dial-value" aria-hidden="true">0</span>
       <input type="range" id="dial-curl" min="0" max="50" step="1" value="0" hidden>
     </div>
     <div class="dial" data-key="pressure" data-min="0" data-max="30" data-step="1" data-value="20">
+      <div class="dial-head"><span class="dial-label">Pressure</span><span class="dial-value" aria-hidden="true">20</span></div>
       <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="30" aria-valuenow="20" aria-valuetext="20" aria-label="Pressure">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <span class="dial-label">Pressure</span>
-      <span class="dial-value" aria-hidden="true">20</span>
       <input type="range" id="dial-pressure" min="0" max="30" step="1" value="20" hidden>
     </div>
     <div class="dial" data-key="bloom" data-min="0" data-max="1.2" data-step="0.05" data-value="0.30">
+      <div class="dial-head"><span class="dial-label">Bloom</span><span class="dial-value" aria-hidden="true">0.30</span></div>
       <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="1.2" aria-valuenow="0.30" aria-valuetext="0.30" aria-label="Bloom">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <span class="dial-label">Bloom</span>
-      <span class="dial-value" aria-hidden="true">0.30</span>
       <input type="range" id="dial-bloom" min="0" max="1.2" step="0.05" value="0.30" hidden>
     </div>
-    <button class="dial-reset" id="dial-reset" type="button" aria-label="Reset fluid dials" title="Reset">↺</button>
+    <button class="dial-reset" id="dial-reset" type="button" aria-label="Reset fluid dials" title="Reset">↺ Reset</button>
   </div>
 
   <script src="token-counter.js"></script>
