@@ -221,6 +221,7 @@
       text-align: center;
     }
     .dial {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: stretch;
@@ -233,7 +234,9 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 8px;
+      pointer-events: none;
     }
+    .dial-head .dial-value { pointer-events: auto; }
     .dial-label {
       font-family: var(--mono);
       font-size: 0.52rem;
@@ -275,6 +278,7 @@
       --dial-pct: 0%;
       --dial-angle: -135deg;
       border-radius: 999px;
+      pointer-events: none;
     }
     .dial-knob:focus-visible { outline: 1px solid rgba(255,255,255,0.55); outline-offset: 2px; border-radius: 999px; }
     .dial-knob-face {
@@ -315,6 +319,29 @@
     .dial-knob:hover .dial-knob-face { background: rgba(255,255,255,0.22); }
     .dial-knob:hover .dial-knob-face::after { box-shadow: 0 1px 8px rgba(0,0,0,0.6); }
     .dial-indicator { display: none; }
+    /* native range overlay — makes drag trivial (browser handles it) */
+    .dial input[type="range"] {
+      position: absolute;
+      left: 0; right: 0;
+      bottom: 0;
+      height: 28px;
+      margin: 0;
+      padding: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      opacity: 0;
+      cursor: ew-resize;
+      z-index: 3;
+      display: block !important;
+      touch-action: none;
+    }
+    .dial input[type="range"]:focus-visible + .dial-knob,
+    .dial:has(input[type="range"]:focus-visible) .dial-knob {
+      outline: 1px solid rgba(255,255,255,0.55);
+      outline-offset: 2px;
+      border-radius: 999px;
+    }
     .dial-reset {
       appearance: none;
       align-self: center;
@@ -649,38 +676,38 @@
   <div class="fluid-dialers" id="fluid-dialers" hidden>
     <div class="dial" data-key="splat" data-min="0.01" data-max="0.12" data-step="0.005" data-value="0.010">
       <div class="dial-head"><span class="dial-label">Splat</span><span class="dial-value" aria-hidden="true">0.010</span></div>
-      <button class="dial-knob" type="button" role="slider" aria-valuemin="0.01" aria-valuemax="0.12" aria-valuenow="0.010" aria-valuetext="0.010" aria-label="Splat radius">
+      <button class="dial-knob" type="button" tabindex="-1" aria-hidden="true" role="presentation">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <input type="range" id="dial-splat" min="0.01" max="0.12" step="0.005" value="0.010" hidden>
+      <input type="range" id="dial-splat" min="0.01" max="0.12" step="0.005" value="0.010">
     </div>
     <div class="dial" data-key="density" data-min="0.90" data-max="1.0" data-step="0.005" data-value="0.925">
       <div class="dial-head"><span class="dial-label">Dissolve</span><span class="dial-value" aria-hidden="true">0.925</span></div>
-      <button class="dial-knob" type="button" role="slider" aria-valuemin="0.90" aria-valuemax="1.0" aria-valuenow="0.925" aria-valuetext="0.925" aria-label="Dissolve">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0.90" aria-valuemax="1.0" aria-valuenow="0.925" aria-valuetext="0.925" aria-label="Dissolve" tabindex="-1" aria-hidden="true">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <input type="range" id="dial-density" min="0.90" max="1.0" step="0.005" value="0.925" hidden>
+      <input type="range" id="dial-density" min="0.90" max="1.0" step="0.005" value="0.925">
     </div>
     <div class="dial" data-key="curl" data-min="0" data-max="50" data-step="1" data-value="0">
       <div class="dial-head"><span class="dial-label">Curl</span><span class="dial-value" aria-hidden="true">0</span></div>
-      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-valuetext="0" aria-label="Curl">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-valuetext="0" aria-label="Curl" tabindex="-1" aria-hidden="true">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <input type="range" id="dial-curl" min="0" max="50" step="1" value="0" hidden>
+      <input type="range" id="dial-curl" min="0" max="50" step="1" value="0">
     </div>
     <div class="dial" data-key="pressure" data-min="0" data-max="30" data-step="1" data-value="20">
       <div class="dial-head"><span class="dial-label">Pressure</span><span class="dial-value" aria-hidden="true">20</span></div>
-      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="30" aria-valuenow="20" aria-valuetext="20" aria-label="Pressure">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="30" aria-valuenow="20" aria-valuetext="20" aria-label="Pressure" tabindex="-1" aria-hidden="true">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <input type="range" id="dial-pressure" min="0" max="30" step="1" value="20" hidden>
+      <input type="range" id="dial-pressure" min="0" max="30" step="1" value="20">
     </div>
     <div class="dial" data-key="bloom" data-min="0" data-max="1.2" data-step="0.05" data-value="0.30">
       <div class="dial-head"><span class="dial-label">Bloom</span><span class="dial-value" aria-hidden="true">0.30</span></div>
-      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="1.2" aria-valuenow="0.30" aria-valuetext="0.30" aria-label="Bloom">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="1.2" aria-valuenow="0.30" aria-valuetext="0.30" aria-label="Bloom" tabindex="-1" aria-hidden="true">
         <span class="dial-knob-face"><span class="dial-indicator"></span></span>
       </button>
-      <input type="range" id="dial-bloom" min="0" max="1.2" step="0.05" value="0.30" hidden>
+      <input type="range" id="dial-bloom" min="0" max="1.2" step="0.05" value="0.30">
     </div>
     <button class="dial-reset" id="dial-reset" type="button" aria-label="Reset fluid dials" title="Reset">↺ Reset</button>
   </div>
