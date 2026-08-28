@@ -12,7 +12,7 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { canvas.hidd
 resizeCanvas();
 
 let config = {
-    // tobis parity: sim 256/dye 1024/radius 0.40/curl 4/pressureDiss 0.08/vel0/dens4/iter16/force12k/brightness3/idle1
+   
     SIM_RESOLUTION: 256,
     DYE_RESOLUTION: 1024,
     CAPTURE_RESOLUTION: 512,
@@ -1145,7 +1145,7 @@ function updateColors (dt) {
 function applyInputs () {
     if (splatStack.length > 0)
         multipleSplats(splatStack.pop());
-    // tobis idleInjection: occasional ambient splats
+   
     if (!config.PAUSED && config.IDLE_INJECTION > 0 && Math.random() < 0.015 * config.IDLE_INJECTION) {
         multipleSplats(1);
     }
@@ -1493,7 +1493,7 @@ function correctDeltaY (delta) {
 
 function generateColor () {
     let c = HSVtoRGB(Math.random(), 1.0, 1.0);
-    // tobis brightness 3 → 0.45 scale (0.15*brightness), keeps paper-visible
+   
     var b = (config.BRIGHTNESS != null ? config.BRIGHTNESS : 3.0) * 0.15;
     c.r *= b;
     c.g *= b;
@@ -1582,11 +1582,11 @@ window.catnewsFluid = {
   splat: function(x,y,dx,dy){ splat(x,y,dx,dy, generateColor()); },
   get config(){ return config; },
   setConfig: function(key, value){
-    // tobis aliases
+   
     if(key==='CURL_STRENGTH') { config.CURL = value; config.CURL_STRENGTH = value; }
     else if(key==='PRESSURE_DISSIPATION') { config.PRESSURE_DISSIPATION = value; config.PRESSURE = Math.max(0, Math.min(1, 1 - value*2)); }
     else if(key==='VELOCITY_DISSIPATION') { config.VELOCITY_DISSIPATION = value; }
-    else if(key==='DENSITY_DISSIPATION_TOBIS') { config.DENSITY_DISSIPATION = 1 - value*0.02; } // tobis 0-4 → 1.0-0.92
+    else if(key==='DENSITY_SLIDER') { config.DENSITY_DISSIPATION = 1 - value*0.02; }
     else config[key]=value;
     if(key==='BLOOM' || key==='SHADING' || key==='SUNRAYS') updateKeywords();
     if(key==='SIM_RESOLUTION' || key==='DYE_RESOLUTION') initFramebuffers();
