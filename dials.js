@@ -103,76 +103,69 @@
           range.addEventListener('input', function(){ setDial(key, parseFloat(range.value)); });
         }
         if(knob){
-          (function(key, knob, meta){
-            var dragging=false, startY=0, startX=0, startVal=0, activePointerId=null, activeEl=null, isTrack=false;
-            function valueFromX(clientX){
-              var rect = knob.getBoundingClientRect();
-              var pct = (clientX - rect.left) / rect.width;
-              pct = Math.max(0, Math.min(1, pct));
-              return meta.min + pct * (meta.max - meta.min);
-            }
-            function onDown(e){
-              try{ e.preventDefault(); }catch(_e){}
-              dragging=true;
-              var el = e.currentTarget;
-              activeEl = el;
-              isTrack = (el === knob);
-              if(el.setPointerCapture && e.pointerId!=null) try{ el.setPointerCapture(e.pointerId);}catch(_e){}
-              activePointerId = e.pointerId;
-              startY = e.clientY != null ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-              startX = e.clientX != null ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
-              startVal = dials[key].value;
-              // if clicking directly on track, jump to click position
-              if(isTrack && e.clientX != null){
-                setDial(key, valueFromX(e.clientX));
-                // update start so drag continues from new position
-                startVal = dials[key].value;
-                startX = e.clientX;
-                startY = e.clientY;
-              }
-              el.style.cursor='grabbing';
-              try{ knob.focus(); }catch(_e){}
-            }
-            function onMove(e){
-              if(!dragging) return;
-              if(isTrack){
-                var x = e.clientX != null ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : null);
-                if(x==null) return;
-                // horizontal drag on track is direct mapping, not delta
-                setDial(key, valueFromX(x));
-              } else {
-                var y = e.clientY != null ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : null);
-                if(y==null) return;
-                var dy = startY - y;
-                var rangeSpan = meta.max - meta.min;
-                var delta = (dy / 160) * rangeSpan;
-                setDial(key, startVal + delta);
-              }
-            }
-            function onUp(e){
-              if(!dragging) return;
-              dragging=false;
-              if(activeEl) activeEl.style.cursor='';
-              knob.style.cursor='';
-              if(activeEl && activePointerId!=null && activeEl.releasePointerCapture) try{ activeEl.releasePointerCapture(activePointerId);}catch(_e){}
-              activeEl=null;
-              isTrack=false;
-            }
-            function attach(el){
-              if(!el) return;
-              el.addEventListener('pointerdown', onDown);
-              el.addEventListener('wheel', function(e){
-                e.preventDefault();
-                var dir = e.deltaY < 0 ? 1 : -1;
-                setDial(key, dials[key].value + dir*meta.step);
-              }, {passive:false});
-            }
-            attach(knob);
-            attach(valEl);
-            attach(wrap);
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', onUp);
-            window.addEventListener('pointercancel', onUp);
+           (function(key, knob, meta){
+             var dragging=false, activePointerId=null, activeEl=null;
+             function valueFromX(clientX){
+               var rect = knob.getBoundingClientRect();
+               // knob has 24px hit area; clamp to track bounds for forgiving hit
+               var pct = (clientX - rect.left) / rect.width;
+               pct = Math.max(0, Math.min(1, pct));
+               return meta.min + pct * (meta.max - meta.min);
+             }
+             function setFromClientX(clientX){
+               setDial(key, valueFromX(clientX));
+             }
+             function onDown(e){
+               try{ e.preventDefault(); }catch(_e){}
+               dragging=true;
+               var el = e.currentTarget;
+               activeEl = el;
+               if(el.setPointerCapture && e.pointerId!=null) try{ el.setPointerCapture(e.pointerId);}catch(_e){}
+               activePointerId = e.pointerId;
+               // jump immediately to click/drag position — works for knob, wrap, and value
+               var cx = e.clientX != null ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+               if(cx != null) setFromClientX(cx);
+               el.style.cursor='grabbing';
+               knob.style.cursor='grabbing';
+               try{ knob.focus(); }catch(_e){}
+             }
+             function onMove(e){
+               if(!dragging) return;
+               var x = e.clientX != null ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+               if(x==null) return;
+               setFromClientX(x);
+             }
+             function onUp(e){
+               if(!dragging) return;
+               dragging=false;
+               if(activeEl) activeEl.style.cursor='';
+               knob.style.cursor='';
+               if(activeEl && activePointerId!=null && activeEl.releasePointerCapture) try{ activeEl.releasePointerCapture(activePointerId);}catch(_e){}
+               activeEl=null;
+             }
+             function attach(el){
+               if(!el) return;
+               el.addEventListener('pointerdown', onDown);
+               el.addEventListener('wheel', function(e){
+                 e.preventDefault();
+                 var dir = e.deltaY < 0 ? 1 : -1;
+                 // hold shift for finer step
+                 var step = e.shiftKey ? meta.step : meta.step;
+                 setDial(key, dials[key].value + dir*step);
+               }, {passive:false});
+               // click anywhere on dial row also jumps (for mouse users without drag)
+               el.addEventListener('click', function(e){
+                 if(dragging) return;
+                 var cx = e.clientX;
+                 if(cx != null) setFromClientX(cx);
+               });
+             }
+             attach(knob);
+             attach(valEl);
+             attach(wrap);
+             window.addEventListener('pointermove', onMove);
+             window.addEventListener('pointerup', onUp);
+             window.addEventListener('pointercancel', onUp);
             knob.addEventListener('keydown', function(e){
               if(e.key==='ArrowLeft' || e.key==='ArrowDown'){ e.preventDefault(); setDial(key, dials[key].value - meta.step); }
               else if(e.key==='ArrowRight' || e.key==='ArrowUp'){ e.preventDefault(); setDial(key, dials[key].value + meta.step); }

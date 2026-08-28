@@ -259,18 +259,18 @@
     }
     .dial-value:hover { color: #fff; border-bottom-color: rgba(255,255,255,0.18); }
     .dial-value:active { cursor: grabbing; }
-    /* tobis slider: thin track + pill thumb, not a knob */
+    /* tobis slider: thin track + pill thumb, not a knob — large hit area for easy drag */
     .dial-knob {
       appearance: none;
       -webkit-appearance: none;
       width: 100%;
-      height: 14px;
+      height: 28px;
       border: 0;
       background: transparent;
       position: relative;
       cursor: ew-resize;
       touch-action: none;
-      padding: 0;
+      padding: 6px 0;
       flex-shrink: 0;
       --dial-pct: 0%;
       --dial-angle: -135deg;
@@ -282,8 +282,8 @@
       left: 0;
       right: 0;
       top: 50%;
-      height: 2px;
-      background: rgba(255,255,255,0.16);
+      height: 3px;
+      background: rgba(255,255,255,0.18);
       border-radius: 999px;
       transform: translateY(-50%);
       overflow: visible;
@@ -302,17 +302,18 @@
       position: absolute;
       left: var(--dial-pct);
       top: 50%;
-      width: 10px; height: 10px;
+      width: 14px; height: 14px;
       border-radius: 50%;
       background: #fff;
       border: 1px solid #0a0a0c;
       transform: translate(-50%, -50%);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.5);
       pointer-events: none;
       transition: transform 0.08s ease, box-shadow 0.08s ease;
     }
-    .dial-knob:active .dial-knob-face::after { transform: translate(-50%, -50%) scale(1.12); box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
-    .dial-knob:hover .dial-knob-face { background: rgba(255,255,255,0.20); }
+    .dial-knob:active .dial-knob-face::after { transform: translate(-50%, -50%) scale(1.15); box-shadow: 0 2px 10px rgba(0,0,0,0.6); }
+    .dial-knob:hover .dial-knob-face { background: rgba(255,255,255,0.22); }
+    .dial-knob:hover .dial-knob-face::after { box-shadow: 0 1px 8px rgba(0,0,0,0.6); }
     .dial-indicator { display: none; }
     .dial-reset {
       appearance: none;
