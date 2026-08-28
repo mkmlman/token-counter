@@ -26,7 +26,7 @@ let config = {
     SPLAT_RADIUS: 0.40,
     SPLAT_FORCE: 12000,
     BRIGHTNESS: 3.0,
-    IDLE_INJECTION: 1,
+    IDLE_INJECTION: 0,
     SHADING: true,
     COLORFUL: true,
     COLOR_UPDATE_SPEED: 10,

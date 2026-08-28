@@ -13,7 +13,7 @@
         return;
       }
       var config = fluid.config;
-      var STORAGE_KEY = 'tc:fluid-dials-v3';
+      var STORAGE_KEY = 'tc:fluid-dials-v4';
       // tobis parity: 10 sliders matching defaultFluidControls + bloom
       var MAP = {
         radius:     { cfg:'SPLAT_RADIUS',            inputId:'dial-radius',     min:0.10, max:0.80, step:0.05,  def:0.40 },
@@ -24,7 +24,7 @@
         iterations: { cfg:'PRESSURE_ITERATIONS',     inputId:'dial-iterations', min:4,    max:32,   step:1,     def:16 },
         splatForce: { cfg:'SPLAT_FORCE',             inputId:'dial-splatForce', min:2000, max:20000,step:500,   def:12000 },
         brightness: { cfg:'BRIGHTNESS',              inputId:'dial-brightness', min:0,    max:5,    step:0.25,  def:3 },
-        idle:       { cfg:'IDLE_INJECTION',          inputId:'dial-idle',       min:0,    max:2,    step:0.25,  def:1 },
+        idle:       { cfg:'IDLE_INJECTION',          inputId:'dial-idle',       min:0,    max:2,    step:0.25,  def:0 },
         bloom:      { cfg:'BLOOM_INTENSITY',         inputId:'dial-bloom',      min:0,    max:1.2,  step:0.05,  def:0.30 }
       };
       var dials = {};
