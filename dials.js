@@ -13,13 +13,19 @@
         return;
       }
       var config = fluid.config;
-      var STORAGE_KEY = 'tc:fluid-dials-v2';
+      var STORAGE_KEY = 'tc:fluid-dials-v3';
+      // tobis parity: 10 sliders matching defaultFluidControls + bloom
       var MAP = {
-        splat:    { cfg:'SPLAT_RADIUS', inputId:'dial-splat', min:0.01, max:0.12, step:0.005, def:0.010 },
-        density:  { cfg:'DENSITY_DISSIPATION', inputId:'dial-density', min:0.90, max:1.0, step:0.005, def:0.925 },
-        curl:     { cfg:'CURL', inputId:'dial-curl', min:0, max:50, step:1, def:0 },
-        pressure: { cfg:'PRESSURE_ITERATIONS', inputId:'dial-pressure', min:0, max:30, step:1, def:20 },
-        bloom:    { cfg:'BLOOM_INTENSITY', inputId:'dial-bloom', min:0, max:1.2, step:0.05, def:0.30 }
+        radius:     { cfg:'SPLAT_RADIUS',            inputId:'dial-radius',     min:0.10, max:0.80, step:0.05,  def:0.40 },
+        curl:       { cfg:'CURL_STRENGTH',           inputId:'dial-curl',       min:0,    max:8,    step:0.5,   def:4 },
+        density:    { cfg:'DENSITY_DISSIPATION_TOBIS', inputId:'dial-density',  min:0,    max:5,    step:0.25,  def:4 },
+        pressureDiss:{ cfg:'PRESSURE_DISSIPATION',   inputId:'dial-pressureDiss', min:0,  max:0.20, step:0.01,  def:0.08 },
+        velocity:   { cfg:'VELOCITY_DISSIPATION',    inputId:'dial-velocity',   min:0,    max:1,    step:0.05,  def:0 },
+        iterations: { cfg:'PRESSURE_ITERATIONS',     inputId:'dial-iterations', min:4,    max:32,   step:1,     def:16 },
+        splatForce: { cfg:'SPLAT_FORCE',             inputId:'dial-splatForce', min:2000, max:20000,step:500,   def:12000 },
+        brightness: { cfg:'BRIGHTNESS',              inputId:'dial-brightness', min:0,    max:5,    step:0.25,  def:3 },
+        idle:       { cfg:'IDLE_INJECTION',          inputId:'dial-idle',       min:0,    max:2,    step:0.25,  def:1 },
+        bloom:      { cfg:'BLOOM_INTENSITY',         inputId:'dial-bloom',      min:0,    max:1.2,  step:0.05,  def:0.30 }
       };
       var dials = {};
       var persistTimer = null;
@@ -54,11 +60,9 @@
         if (!dials[key]) return;
         dials[key].value = value;
         try {
-          if(meta.cfg==='SPLAT_RADIUS') fluid.setConfig('SPLAT_RADIUS', value * 14);
-          else fluid.setConfig(meta.cfg, value);
+          fluid.setConfig(meta.cfg, value);
         } catch(e){
-          if(meta.cfg==='SPLAT_RADIUS') config.SPLAT_RADIUS = value * 14;
-          else config[meta.cfg] = value;
+          config[meta.cfg] = value;
         }
         var knob = dials[key].knob;
         var pct = pctFor(value, meta.min, meta.max);

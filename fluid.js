@@ -12,17 +12,21 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { canvas.hidd
 resizeCanvas();
 
 let config = {
-    // defaults match footer dials [Image 1] — subtle ink
-    SIM_RESOLUTION: 128,
+    // tobis parity: sim 256/dye 1024/radius 0.40/curl 4/pressureDiss 0.08/vel0/dens4/iter16/force12k/brightness3/idle1
+    SIM_RESOLUTION: 256,
     DYE_RESOLUTION: 1024,
     CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 0.925,
-    VELOCITY_DISSIPATION: 0.2,
+    DENSITY_DISSIPATION: 1.0,
+    VELOCITY_DISSIPATION: 0.0,
+    PRESSURE_DISSIPATION: 0.08,
     PRESSURE: 0.8,
-    PRESSURE_ITERATIONS: 20,
-    CURL: 0,
-    SPLAT_RADIUS: 0.14,
-    SPLAT_FORCE: 6000,
+    PRESSURE_ITERATIONS: 16,
+    CURL: 4,
+    CURL_STRENGTH: 4,
+    SPLAT_RADIUS: 0.40,
+    SPLAT_FORCE: 12000,
+    BRIGHTNESS: 3.0,
+    IDLE_INJECTION: 1,
     SHADING: true,
     COLORFUL: true,
     COLOR_UPDATE_SPEED: 10,
@@ -1141,6 +1145,10 @@ function updateColors (dt) {
 function applyInputs () {
     if (splatStack.length > 0)
         multipleSplats(splatStack.pop());
+    // tobis idleInjection: occasional ambient splats
+    if (!config.PAUSED && config.IDLE_INJECTION > 0 && Math.random() < 0.015 * config.IDLE_INJECTION) {
+        multipleSplats(1);
+    }
 
     pointers.forEach(p => {
         if (p.moved) {
@@ -1485,10 +1493,11 @@ function correctDeltaY (delta) {
 
 function generateColor () {
     let c = HSVtoRGB(Math.random(), 1.0, 1.0);
-    // visible on warm paper — brighter than original 0.15, but not washed-out
-    c.r *= 0.45;
-    c.g *= 0.45;
-    c.b *= 0.45;
+    // tobis brightness 3 → 0.45 scale (0.15*brightness), keeps paper-visible
+    var b = (config.BRIGHTNESS != null ? config.BRIGHTNESS : 3.0) * 0.15;
+    c.r *= b;
+    c.g *= b;
+    c.b *= b;
     return c;
 }
 
@@ -1572,6 +1581,15 @@ window.catnewsFluid = {
   hide: function(){ canvas.hidden = true; canvas.style.display = 'none'; canvas.classList.remove('is-visible'); },
   splat: function(x,y,dx,dy){ splat(x,y,dx,dy, generateColor()); },
   get config(){ return config; },
-  setConfig: function(key, value){ config[key]=value; if(key==='BLOOM' || key==='SHADING' || key==='SUNRAYS') updateKeywords(); }
+  setConfig: function(key, value){
+    // tobis aliases
+    if(key==='CURL_STRENGTH') { config.CURL = value; config.CURL_STRENGTH = value; }
+    else if(key==='PRESSURE_DISSIPATION') { config.PRESSURE_DISSIPATION = value; config.PRESSURE = Math.max(0, Math.min(1, 1 - value*2)); }
+    else if(key==='VELOCITY_DISSIPATION') { config.VELOCITY_DISSIPATION = value; }
+    else if(key==='DENSITY_DISSIPATION_TOBIS') { config.DENSITY_DISSIPATION = 1 - value*0.02; } // tobis 0-4 → 1.0-0.92
+    else config[key]=value;
+    if(key==='BLOOM' || key==='SHADING' || key==='SUNRAYS') updateKeywords();
+    if(key==='SIM_RESOLUTION' || key==='DYE_RESOLUTION') initFramebuffers();
+  }
 };
 })();
