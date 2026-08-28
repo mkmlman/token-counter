@@ -155,6 +155,187 @@
     }
 
     /* ------------------------------------------------------------------ */
+    /* Fluid background (ported from catnews)                               */
+    /* ------------------------------------------------------------------ */
+    .fluid-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    @supports (height: 100dvh) {
+      .fluid-canvas { height: 100dvh; }
+    }
+    .fluid-canvas.is-visible { opacity: 1; }
+    /* when fluid is visible, let the frosted sheet breathe a bit more */
+    body:has(.fluid-canvas.is-visible) .sheet {
+      background: color-mix(in srgb, var(--bg) 72%, transparent);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fluid-canvas { display: none !important; }
+    }
+    @media print {
+      .fluid-canvas { display: none !important; }
+    }
+
+    /* Fluid dialers — tactile sliders (catnews) */
+    .fluid-dialers {
+      position: fixed;
+      left: 50%;
+      bottom: 10px;
+      z-index: 220;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 7px 12px 6px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      background: rgba(12,12,14,0.96);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.38);
+      transform: translateX(-50%);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      max-width: calc(100vw - 16px);
+      overflow-x: auto;
+      scrollbar-width: none;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    .fluid-dialers::-webkit-scrollbar { display: none; }
+    .fluid-dialers[hidden] { display: none !important; }
+    @media (prefers-reduced-motion: reduce) {
+      .fluid-dialers { transition: none; }
+    }
+    .dial {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      min-width: 64px;
+      flex-shrink: 0;
+    }
+    .dial-knob {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 56px;
+      height: 24px;
+      border: 0;
+      background: transparent;
+      position: relative;
+      cursor: ew-resize;
+      touch-action: none;
+      padding: 0;
+      flex-shrink: 0;
+      --dial-pct: 0%;
+      --dial-angle: -135deg;
+    }
+    .dial-knob:focus-visible { outline: 1px solid rgba(255,255,255,0.55); outline-offset: 2px; border-radius: 4px; }
+    .dial-knob-face {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 2px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+      transform: translateY(-50%);
+      overflow: visible;
+    }
+    .dial-knob-face::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: var(--dial-pct);
+      background: #d6d6d8;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .dial-knob-face::after {
+      content: "";
+      position: absolute;
+      left: var(--dial-pct);
+      top: 50%;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #ececec;
+      border: 1px solid #0c0c0e;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.45);
+      pointer-events: none;
+      transition: transform 0.08s ease;
+    }
+    .dial-knob:active .dial-knob-face::after { transform: translate(-50%, -50%) scale(1.15); }
+    .dial-knob:hover .dial-knob-face { background: rgba(255,255,255,0.18); }
+    .dial-indicator { display: none; }
+    .dial-label {
+      font-family: var(--mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #7e7e80;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .dial-value {
+      font-family: var(--mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.02em;
+      color: #d0d0d2;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      min-height: 0.58rem;
+      cursor: ew-resize;
+      border-bottom: 1px dotted rgba(255,255,255,0.18);
+      padding-bottom: 1px;
+      user-select: none;
+    }
+    .dial-value:hover { color: #fff; border-bottom-color: rgba(255,255,255,0.32); }
+    .dial-value:active { cursor: grabbing; }
+    .dial-reset {
+      appearance: none;
+      align-self: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: transparent;
+      color: #8d8d8f;
+      font-size: 11px;
+      line-height: 1;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      margin-left: 2px;
+      transition: color 0.14s, border-color 0.14s, background 0.14s;
+    }
+    .dial-reset:hover { color: #fff; border-color: rgba(255,255,255,0.20); background: rgba(255,255,255,0.06); }
+    @media (max-width:560px) {
+      .fluid-dialers { bottom: 8px; gap: 12px; padding: 7px 9px 6px; border-radius: 8px; }
+      .dial-knob { width: 48px; }
+      .dial { min-width: 52px; }
+      .dial-label, .dial-value { font-size: 0.54rem; }
+    }
+    /* background toggle (ocean/fluid style) */
+    .bg-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px; height: 34px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .bg-toggle:hover { color: var(--accent); background: var(--accent-soft); border-color: var(--line); }
+
+    /* ------------------------------------------------------------------ */
     /* Top bar                                                              */
     /* ------------------------------------------------------------------ */
     .topbar {
@@ -376,6 +557,7 @@
 <body>
 
   <div class="dappled-scene" aria-hidden="true"></div>
+  <canvas class="fluid-canvas" id="fluid" aria-hidden="true" hidden></canvas>
 
   <div class="topbar">
     <span class="brand">
@@ -383,6 +565,7 @@
       <b>TokenCounter</b>
     </span>
     <span class="links">
+      <button id="bg-toggle" class="bg-toggle" type="button" aria-pressed="false" aria-label="Background: Dappled" title="Background: Dappled">◐</button>
       <button id="toggle-theme" class="theme-toggle" aria-label="Toggle light/dark theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.9 4.9l1.4 1.4"/><path d="M17.7 17.7l1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.9 19.1l1.4-1.4"/><path d="M17.7 6.3l1.4-1.4"/></svg>
@@ -419,8 +602,55 @@
     MIT licensed · <a href="https://github.com/mkmlman/token-counter#readme">Documentation</a>
   </footer>
 
+  <!-- Fluid dialers (catnews) — shown only when fluid background is active -->
+  <div class="fluid-dialers" id="fluid-dialers" hidden>
+    <div class="dial" data-key="splat" data-min="0.01" data-max="0.12" data-step="0.005" data-value="0.010">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0.01" aria-valuemax="0.12" aria-valuenow="0.010" aria-valuetext="0.010" aria-label="Splat radius">
+        <span class="dial-knob-face"><span class="dial-indicator"></span></span>
+      </button>
+      <span class="dial-label">Splat</span>
+      <span class="dial-value" aria-hidden="true">0.010</span>
+      <input type="range" id="dial-splat" min="0.01" max="0.12" step="0.005" value="0.010" hidden>
+    </div>
+    <div class="dial" data-key="density" data-min="0.90" data-max="1.0" data-step="0.005" data-value="0.925">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0.90" aria-valuemax="1.0" aria-valuenow="0.925" aria-valuetext="0.925" aria-label="Dissolve">
+        <span class="dial-knob-face"><span class="dial-indicator"></span></span>
+      </button>
+      <span class="dial-label">Dissolve</span>
+      <span class="dial-value" aria-hidden="true">0.925</span>
+      <input type="range" id="dial-density" min="0.90" max="1.0" step="0.005" value="0.925" hidden>
+    </div>
+    <div class="dial" data-key="curl" data-min="0" data-max="50" data-step="1" data-value="0">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="50" aria-valuenow="0" aria-valuetext="0" aria-label="Curl">
+        <span class="dial-knob-face"><span class="dial-indicator"></span></span>
+      </button>
+      <span class="dial-label">Curl</span>
+      <span class="dial-value" aria-hidden="true">0</span>
+      <input type="range" id="dial-curl" min="0" max="50" step="1" value="0" hidden>
+    </div>
+    <div class="dial" data-key="pressure" data-min="0" data-max="30" data-step="1" data-value="20">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="30" aria-valuenow="20" aria-valuetext="20" aria-label="Pressure">
+        <span class="dial-knob-face"><span class="dial-indicator"></span></span>
+      </button>
+      <span class="dial-label">Pressure</span>
+      <span class="dial-value" aria-hidden="true">20</span>
+      <input type="range" id="dial-pressure" min="0" max="30" step="1" value="20" hidden>
+    </div>
+    <div class="dial" data-key="bloom" data-min="0" data-max="1.2" data-step="0.05" data-value="0.30">
+      <button class="dial-knob" type="button" role="slider" aria-valuemin="0" aria-valuemax="1.2" aria-valuenow="0.30" aria-valuetext="0.30" aria-label="Bloom">
+        <span class="dial-knob-face"><span class="dial-indicator"></span></span>
+      </button>
+      <span class="dial-label">Bloom</span>
+      <span class="dial-value" aria-hidden="true">0.30</span>
+      <input type="range" id="dial-bloom" min="0" max="1.2" step="0.05" value="0.30" hidden>
+    </div>
+    <button class="dial-reset" id="dial-reset" type="button" aria-label="Reset fluid dials" title="Reset">↺</button>
+  </div>
+
   <script src="token-counter.js"></script>
   <script src="dappled-light.js"></script>
+  <script src="fluid.js" defer></script>
+  <script src="dials.js" defer></script>
   <script>
     var verified = TokenCounter.init({
       target: "#counter-verified",
@@ -495,13 +725,102 @@
       }
     } catch (e) {}
 
-    // Boot the dappled-light shader (it waits for a "nav" event)
-    document.addEventListener("DOMContentLoaded", function () {
-      document.dispatchEvent(new CustomEvent("nav"));
-    });
-    if (document.readyState !== "loading") {
-      document.dispatchEvent(new CustomEvent("nav"));
-    }
+    // Background toggle: dappled ↔ fluid ↔ off (ported from catnews ocean/fluid/off)
+    (function () {
+      var bgBtn = document.getElementById("bg-toggle");
+      var fluidEl = document.getElementById("fluid");
+      var dappledEl = document.querySelector(".dappled-scene");
+      var dialers = document.getElementById("fluid-dialers");
+      if (!bgBtn || !fluidEl || !dappledEl) return;
+      var KEY = "tc:background";
+      var saveData = (navigator.connection && navigator.connection.saveData) || false;
+      var reducePref = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function isForcedOff() { return saveData || reducePref; }
+      function read() {
+        try {
+          var v = localStorage.getItem(KEY);
+          if (v === "dappled" || v === "fluid" || v === "off") return v;
+        } catch (e) {}
+        if (isForcedOff()) return "off";
+        return "dappled";
+      }
+      function apply(state) {
+        var showDappled = state === "dappled";
+        var showFluid = state === "fluid";
+        dappledEl.hidden = !showDappled;
+        dappledEl.style.display = showDappled ? "" : "none";
+        if (window.catnewsFluid) {
+          if (showFluid) window.catnewsFluid.show(); else window.catnewsFluid.hide();
+        } else {
+          fluidEl.hidden = !showFluid;
+          if (showFluid) fluidEl.classList.add("is-visible"); else fluidEl.classList.remove("is-visible");
+          fluidEl.style.display = showFluid ? "" : "none";
+        }
+        if (dialers) {
+          dialers.hidden = !showFluid;
+          dialers.setAttribute("aria-hidden", showFluid ? "false" : "true");
+        }
+        var label = showDappled ? "Dappled" : showFluid ? "Fluid" : "Off";
+        var next = showDappled ? "fluid" : showFluid ? "off" : "dappled";
+        var glyph = showDappled ? "◐" : showFluid ? "≈" : "○";
+        bgBtn.textContent = glyph;
+        bgBtn.setAttribute("aria-pressed", state !== "off" ? "true" : "false");
+        bgBtn.setAttribute("aria-label", "Background: " + label + " — switch to " + next);
+        bgBtn.title = "Background: " + label + " — click for " + next;
+        try { localStorage.setItem(KEY, state); } catch (e) {}
+        if (showDappled) {
+          document.dispatchEvent(new CustomEvent("nav"));
+          document.dispatchEvent(new CustomEvent("themechange"));
+        }
+      }
+      var cur = read();
+      var attempts = 0;
+      function initApply() {
+        if (cur === "fluid" && !window.catnewsFluid && attempts++ < 40) {
+          return setTimeout(initApply, 100);
+        }
+        apply(cur);
+        // ensure dappled shader boots if needed (it waits for nav)
+        if (cur !== "fluid" && cur !== "off") {
+          // nav already dispatched above via apply; extra dispatch for safety
+          if (document.readyState !== "loading") document.dispatchEvent(new CustomEvent("nav"));
+        }
+      }
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initApply);
+      } else {
+        initApply();
+      }
+      bgBtn.addEventListener("click", function () {
+        var s;
+        try { s = localStorage.getItem(KEY); } catch (e) { s = null; }
+        if (s !== "dappled" && s !== "fluid" && s !== "off") {
+          if (!dappledEl.hidden) s = "dappled";
+          else if (!fluidEl.hidden && fluidEl.classList.contains("is-visible")) s = "fluid";
+          else s = "off";
+        }
+        var nxt = s === "dappled" ? "fluid" : s === "fluid" ? "off" : "dappled";
+        apply(nxt);
+      });
+      window.addEventListener("storage", function (e) {
+        if (e.key === KEY && (e.newValue === "dappled" || e.newValue === "fluid" || e.newValue === "off")) {
+          apply(e.newValue);
+        }
+      });
+    })();
+
+    // Fallback boot for dappled if background script hasn't run yet
+    (function () {
+      var bg = null;
+      try { bg = localStorage.getItem("tc:background"); } catch (e) {}
+      if (bg === "fluid" || bg === "off") return;
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!document.querySelector(".dappled-scene").hidden) document.dispatchEvent(new CustomEvent("nav"));
+      });
+      if (document.readyState !== "loading" && !document.querySelector(".dappled-scene").hidden) {
+        document.dispatchEvent(new CustomEvent("nav"));
+      }
+    })();
   </script>
 </body>
 </html>
