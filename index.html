@@ -807,7 +807,7 @@
           if (v === "dappled" || v === "fluid" || v === "off") return v;
         } catch (e) {}
         if (isForcedOff()) return "off";
-        return "dappled";
+        return "fluid";
       }
       function apply(state) {
         var showDappled = state === "dappled";
@@ -874,11 +874,11 @@
       });
     })();
 
-    // Fallback boot for dappled if background script hasn't run yet
+    // Fallback boot for dappled if background script hasn't run yet (default is now fluid)
     (function () {
       var bg = null;
       try { bg = localStorage.getItem("tc:background"); } catch (e) {}
-      if (bg === "fluid" || bg === "off") return;
+      if (bg !== "dappled") return;
       document.addEventListener("DOMContentLoaded", function () {
         if (!document.querySelector(".dappled-scene").hidden) document.dispatchEvent(new CustomEvent("nav"));
       });
