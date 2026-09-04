@@ -9,12 +9,11 @@
     "token-counter.css",
     "dappled-light.js",
     "fluid.js",
-    "dials.js",
     "LDR_LLL1_0.png",
     "index.html"
   ],
   "scripts": {
-    "check": "node --check token-counter.js && node --check dappled-light.js && node --check fluid.js && node --check dials.js",
+    "check": "node --check token-counter.js && node --check dappled-light.js && node --check fluid.js",
     "demo": "python3 -m http.server 8080"
   },
   "keywords": [
